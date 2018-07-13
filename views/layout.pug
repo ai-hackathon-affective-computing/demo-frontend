@@ -1,0 +1,15 @@
+doctype html
+html(lang="en", dir="ltr")
+  head
+    include includes/metas.pug
+    include includes/favicons.pug
+    include includes/social-media.pug
+
+    //- Assets
+    link(rel="stylesheet" href="global.css")
+    link(rel="stylesheet" href="main.css")
+    script(defer="" src="bundle.js")
+  body
+    block content
+    footer
+      a(href="impressum.html") Impressum
