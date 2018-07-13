@@ -1,0 +1,4 @@
+public/bundle.*
+public/*.html
+!**/readme.md
+node_modules

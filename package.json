@@ -1,0 +1,47 @@
+{
+  "name": "demo-frontend",
+  "version": "0.0.0",
+  "description": "Hackathon Demo UI",
+  "scripts": {
+    "build": "webpack --watch",
+    "buildOnce": "webpack",
+    "buildProd": "cross-env NODE_ENV=production webpack && node compile-markup.js",
+    "dev": "node dev-server.js",
+    "start": "npm run dev",
+    "lint": "tslint --format stylish --project .",
+    "prettier": "prettier --config node_modules/tslint-lt/.prettierrc.yml --write \"{,!node_modules/}**/*.{ts,tsx}\"",
+    "test": "npm run buildOnce && npm run lint && npm run prettier && node src/tests/test.js",
+    "prepublish": "npm run buildOnce"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/bundle",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ai-hackathon-affective-computing/demo-frontend.git"
+  },
+  "author": "ai-hackathon-affective-computing",
+  "license": "All rights reserved.",
+  "dependencies": {
+    "dom-loaded": "^1.0.1",
+    "glamor": "^2.20.40",
+    "preact": "^8.2.9",
+    "pug": "^2.0.3"
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "css-loader": "^1.0.0",
+    "express": "^4.16.3",
+    "mini-css-extract-plugin": "^0.4.1",
+    "morgan": "^1.9.0",
+    "node-sass": "^4.9.2",
+    "sass-loader": "^7.0.3",
+    "style-loader": "^0.21.0",
+    "ts-loader": "^4.4.1",
+    "tslint-lt": "^1.6.4",
+    "typescript": "^2.9.2",
+    "webpack": "^4.12.1",
+    "webpack-cli": "^3.0.8"
+  }
+}
