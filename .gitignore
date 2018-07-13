@@ -1,4 +1,2 @@
-docs/bundle.*
-docs/*.html
 !**/readme.md
 node_modules
