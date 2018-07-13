@@ -7,7 +7,8 @@ html(lang="en", dir="ltr")
 
     //- Assets
     link(rel="stylesheet" href="global.css")
-    link(rel="stylesheet" href="main.css")
+    if isProduction
+      link(rel="stylesheet" href="main.css")
     script(defer="" src="bundle.js")
   body
     block content

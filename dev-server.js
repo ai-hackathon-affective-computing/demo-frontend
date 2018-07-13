@@ -1,8 +1,13 @@
 //const { join } = require("path")
 const express = require("express")
 const logger = require("morgan")
-const locals = require("./pug-variables")
+const templateLocals = require("./pug-variables")
 const { publicFolder } = require("./config")
+
+const locals = {
+  ...templateLocals,
+  isProduction: false
+}
 
 const e = express()
 

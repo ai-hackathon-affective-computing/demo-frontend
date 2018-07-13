@@ -1,7 +1,12 @@
 const { writeFileSync } = require("fs")
 const { compileFile } = require("pug")
-const locals = require("./pug-variables")
+const templateLocals = require("./pug-variables")
 const { publicFolder } = require("./config")
+
+const locals = {
+  ...templateLocals,
+  isProduction: true
+}
 
 const generate = (input, output) => {
   const html = compileFile(`views/${input}.pug`)(locals)
