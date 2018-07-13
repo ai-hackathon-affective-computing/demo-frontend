@@ -1,3 +1,3 @@
-export default {
-  publicFolder = "docs"
+module.exports = {
+  publicFolder: "docs"
 }
