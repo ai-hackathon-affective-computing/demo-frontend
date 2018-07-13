@@ -1,4 +1,7 @@
 .timeline {
-    height: 20%;
-    border: 1px solid green;    
+	width: 100%;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	flex-wrap: wrap;
 }

@@ -1,4 +1,12 @@
 .cockpit {
-    height: 80%;
-    border: 1px solid red;
+	width: 100%;
+	
+	display: flex;
+	justify-content: space-around;
+	align-items: flex-start;
+	flex-wrap: wrap;
+}
+
+.cockpit-image {
+	width: 100%;
 }
