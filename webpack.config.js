@@ -37,7 +37,12 @@ const config = (entry, outfile, node = false) => {
         test: /\.(sa|sc|c)ss$/,
         use: [
           isProduction ? MiniCssExtractPlugin.loader : "style-loader",
-          "css-loader",
+          {
+            loader: "css-loader",
+            options: {
+              url: false
+            }
+          },
           "sass-loader"
         ]
       }],
