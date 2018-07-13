@@ -10,7 +10,7 @@
     "start": "npm run dev",
     "lint": "tslint --format stylish --project .",
     "prettier": "prettier --config node_modules/tslint-lt/.prettierrc.yml --write \"{,!node_modules/}**/*.{ts,tsx}\"",
-    "test": "npm run buildOnce && npm run lint && npm run prettier && node src/tests/test.js",
+    "test": "npm run buildOnce && npm run lint && npm run prettier",
     "prepublish": "npm run buildOnce"
   },
   "files": [
@@ -25,7 +25,6 @@
   "license": "All rights reserved.",
   "dependencies": {
     "dom-loaded": "^1.0.1",
-    "glamor": "^2.20.40",
     "preact": "^8.2.9",
     "pug": "^2.0.3"
   },
