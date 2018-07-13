@@ -1,7 +1,18 @@
 .timeline {
 	width: 100%;
 	display: flex;
-	justify-content: space-around;
-	align-items: center;
-	flex-wrap: wrap;
+	justify-content: flex-start;
+	align-items: flex-start;
+    flex-wrap: wrap;
+    // border: 1px solid orange;
+    position: relative;
+
+    
+
 }
+
+.timeline-svg {
+    width: 100%;
+    height: auto;
+    // position: absolute;
+}   
