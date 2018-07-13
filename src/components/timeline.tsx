@@ -1,8 +1,11 @@
 import { h, Component } from "preact"
 import "./timeline.scss"
-import BmwSVG, { IKeyFrame } from "./bmw.svg"
+import BmwSVG from "./bmw.svg"
 import { nextFrame } from "improved/dist/browser"
-import EASING from "./easing";
+import easing from "./easing"
+import { TIMELINE_VIEWBOX_HEIGHT, TIMELINE_VIEWBOX_WIDTH } from "./timeline.constants"
+
+const SPEED_DECAY = 0.001
 
 interface ITimelineState {
     startX: number
@@ -21,11 +24,11 @@ export default class Timeline extends Component<{}, ITimelineState> {
         this.animateMe(0)
 
         setTimeout(() => {
-            this.moveTo(1000)
+            this.moveTo(500)
         }, 1000)
 
         setTimeout(() => {
-            this.moveTo(3000)
+            this.moveTo(750)
         }, 3000)
     }
 
@@ -39,7 +42,7 @@ export default class Timeline extends Component<{}, ITimelineState> {
         const delta = dt - previous
 
         if (this.isAnimating) {
-            let newT = this.state.t + delta * 0.001
+            let newT = this.state.t + delta * SPEED_DECAY
             if (newT >= 1.0) {
                 newT = 1.0
                 this.isAnimating = false
@@ -51,11 +54,23 @@ export default class Timeline extends Component<{}, ITimelineState> {
 
     public render() {
         const delta = this.state.targetX - this.state.startX
-        const x = this.state.startX + EASING.easeInOutCubic(this.state.t) * delta
+        const x = this.state.startX + easing.easeInOutCubic(this.state.t) * delta
         return (
             <div class="timeline">
-                <svg class="timeline-svg" viewBox="0 0 1000 200">
+                <svg class="timeline-svg" viewBox={`0 0 ${TIMELINE_VIEWBOX_WIDTH} ${TIMELINE_VIEWBOX_HEIGHT}`}>
                     <BmwSVG x={x}></BmwSVG>
+
+                    <circle cx="0" cy="100" r="10" stroke="#aaa" stroke-width="3" fill="#aaa" />
+                    <circle cx="250" cy="100" r="10" stroke="#aaa" stroke-width="3" fill="#aaa" />
+                    <circle cx="500" cy="100" r="10" stroke="#aaa" stroke-width="3" fill="#aaa" />
+                    <circle cx="750" cy="100" r="10" stroke="#aaa" stroke-width="3" fill="#aaa" />
+                    <circle cx="1000" cy="100" r="10" stroke="#aaa" stroke-width="3" fill="#aaa" />
+
+                    <text x="0" y="100" class="small">🏡</text>
+                    <text x="1000" y="100" class="small">📍</text>
+
+
+
                 </svg>
             </div>
         )

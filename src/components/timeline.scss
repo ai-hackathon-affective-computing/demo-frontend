@@ -1,18 +1,19 @@
 .timeline {
-	width: 100%;
-	display: flex;
-	justify-content: flex-start;
-	align-items: flex-start;
-    flex-wrap: wrap;
-    // border: 1px solid orange;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap; // border: 1px solid orange;
     position: relative;
-
-    
-
 }
 
 .timeline-svg {
     width: 100%;
-    height: auto;
-    // position: absolute;
-}   
+    height: auto; // position: absolute;
+}
+
+.small {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 2em;
+    transform: translate(-0.7em, 0.3em);
+}
