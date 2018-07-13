@@ -3,7 +3,7 @@ import "./timeline.scss"
 import BmwSVG from "./bmw.svg"
 import { nextFrame } from "improved/dist/browser"
 import easing from "./easing"
-import { TIMELINE_VIEWBOX_HEIGHT, TIMELINE_VIEWBOX_WIDTH } from "./timeline.constants"
+import { TIMELINE_VIEWBOX_HEIGHT, TIMELINE_VIEWBOX_WIDTH, TIMELINE_PADDING_X } from "./timeline.constants"
 
 const SPEED_DECAY = 0.001
 
@@ -57,19 +57,20 @@ export default class Timeline extends Component<{}, ITimelineState> {
         const x = this.state.startX + easing.easeInOutCubic(this.state.t) * delta
         return (
             <div class="timeline">
-                <svg class="timeline-svg" viewBox={`0 0 ${TIMELINE_VIEWBOX_WIDTH} ${TIMELINE_VIEWBOX_HEIGHT}`}>
+                <svg class="timeline-svg" viewBox={`${-TIMELINE_PADDING_X} 0 ${TIMELINE_VIEWBOX_WIDTH + 2 * TIMELINE_PADDING_X} ${TIMELINE_VIEWBOX_HEIGHT}`}>
+                    <path d="M0 100 L1000 100 Z" class="svg-street" />
+                    <path d="M0 100 L1000 100 Z" class="svg-street-dash" />
+
                     <BmwSVG x={x}></BmwSVG>
 
-                    <circle cx="0" cy="100" r="10" stroke="#aaa" stroke-width="3" fill="#aaa" />
-                    <circle cx="250" cy="100" r="10" stroke="#aaa" stroke-width="3" fill="#aaa" />
-                    <circle cx="500" cy="100" r="10" stroke="#aaa" stroke-width="3" fill="#aaa" />
-                    <circle cx="750" cy="100" r="10" stroke="#aaa" stroke-width="3" fill="#aaa" />
-                    <circle cx="1000" cy="100" r="10" stroke="#aaa" stroke-width="3" fill="#aaa" />
+                    <circle cx="0" cy="100" r="15" class="svg-stops" />
+                    <circle cx="250" cy="100" r="15" class="svg-stops" />
+                    <circle cx="500" cy="100" r="15" class="svg-stops" />
+                    <circle cx="750" cy="100" r="15" class="svg-stops" />
+                    <circle cx="1000" cy="100" r="15" class="svg-stops" />
 
                     <text x="0" y="100" class="small">🏡</text>
                     <text x="1000" y="100" class="small">📍</text>
-
-
 
                 </svg>
             </div>

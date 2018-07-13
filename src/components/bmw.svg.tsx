@@ -7,14 +7,14 @@ const BMW_VIEWBOX_HEIGHT = 629
 const scale = 0.2
 const invertedScale = 1.0 / scale
 // tslint:disable-next-line:no-magic-numbers
-const globalTransformString = `translate(${(BMW_VIEWBOX_WIDTH * 0.5) * scale} ${TIMELINE_VIEWBOX_HEIGHT * 0.5 - BMW_VIEWBOX_HEIGHT * 0.5 * scale}) scale(-${scale},${scale})`
+const globalTransformString = `translate(${(BMW_VIEWBOX_WIDTH * 0.5) * scale} ${(TIMELINE_VIEWBOX_HEIGHT - 40) * 0.5 - BMW_VIEWBOX_HEIGHT * 0.5 * scale}) scale(-${scale},${scale})`
 
 interface IBMWProps {
   x: number
 }
 
 const bmwSVG = (props: IBMWProps) => (
-  <g transform={globalTransformString} >
+  <g class="bmw-svg" transform={globalTransformString} >
     <g transform={`translate(-${props.x * invertedScale} 0)`}>
       {/* <rect width={BMW_VIEWBOX_WIDTH} height={BMW_VIEWBOX_HEIGHT} style="fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)" /> */}
       <path
