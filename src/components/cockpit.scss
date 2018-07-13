@@ -1,12 +1,26 @@
 .cockpit {
 	width: 100%;
-	
 	display: flex;
 	justify-content: space-around;
 	align-items: flex-start;
-	flex-wrap: wrap;
+    flex-wrap: nowrap;
+    position: relative;
 }
 
+
 .cockpit-image {
-	width: 100%;
+    width: 100%;
+    height:auto;
+    z-index: 3;
+}
+
+.cockpit-video {
+    transform: translate(-50%, 0);
+    position: absolute;
+
+    left: 51%;
+    top: 17%;
+    z-index: 1;
+    width: 17%;
+    height: auto;
 }

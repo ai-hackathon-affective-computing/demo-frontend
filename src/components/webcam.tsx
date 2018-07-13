@@ -1,6 +1,11 @@
 import { h, Component } from "preact"
+import "./webcam.scss"
 
-export default class WEvcam extends Component {
+interface IWebcamProps {
+    class?: string
+}
+
+export default class Webcam extends Component<IWebcamProps> {
     public videoStream?: MediaStream // usermedia stream
     private video?: HTMLVideoElement // video html element
 
@@ -15,7 +20,7 @@ export default class WEvcam extends Component {
         }
 
         // request user permission
-        navigator.mediaDevices.getUserMedia({video: true})
+        navigator.mediaDevices.getUserMedia({ video: true })
             .then(onSuccess)
             .catch(e => console.log(e))
     }
@@ -26,7 +31,7 @@ export default class WEvcam extends Component {
 
     public render() {
         return (
-            <div>
+            <div class={this.props.class}>
                 <video width="450" height="450"></video>
             </div>
         )
