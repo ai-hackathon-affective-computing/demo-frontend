@@ -1,4 +1,4 @@
-public/bundle.*
-public/*.html
+docs/bundle.*
+docs/*.html
 !**/readme.md
 node_modules

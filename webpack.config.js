@@ -1,6 +1,7 @@
 const webpack = require("webpack")
 const { dirname, basename, join } = require("path")
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const { publicFolder } = require("./config")
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -54,5 +55,5 @@ const config = (entry, outfile, node = false) => {
 }
 
 module.exports = [
-  config("./src/index.tsx", "public/bundle.js")
+  config("./src/index.tsx", publicFolder + "/bundle.js")
 ]
