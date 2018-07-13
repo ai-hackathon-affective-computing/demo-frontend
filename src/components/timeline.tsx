@@ -7,33 +7,61 @@ import { TIMELINE_VIEWBOX_HEIGHT, TIMELINE_VIEWBOX_WIDTH, TIMELINE_PADDING_X } f
 
 const SPEED_DECAY = 0.001
 
+enum PlannedAction {
+    MUSIC_NO = "🔇",
+    MUSIC_A = "🎷",
+    MUSIC_B = "🎹",
+    ROUTE_NO = "🛑",
+    ROUTE_A = "🏕",
+    ROUTE_BEACH = "🏖",
+}
+
+class TimelineStop {
+    constructor(
+        public min: number,
+        public emoji?: string,
+        public emotion?: number,
+        public plannedAction?: PlannedAction
+    ) { }
+}
 interface ITimelineState {
     startX: number
     targetX: number
     t: number
+
+    stops: TimelineStop[]
 }
 
 export default class Timeline extends Component<{}, ITimelineState> {
 
     // private keys: IKeyFrame[] = [{xStart: 0, xEnd: 1000}]
     // public state: ITimelineState = { keys: [{ xStart: 0, xEnd: 1000 }] }
-    public state: ITimelineState = { startX: 0, targetX: 0, t: 0 }
+    public state: ITimelineState = {
+        startX: 0, targetX: 0, t: 0, stops: [
+            new TimelineStop(0, "🏡", 0.25, PlannedAction.MUSIC_A),
+            new TimelineStop(60, "📍"),
+            new TimelineStop(15),
+        ]
+    }
     private isAnimating: boolean = false
+    private minutesToSVG(xInMinutes: number) {
+        return xInMinutes / 60 * TIMELINE_VIEWBOX_WIDTH
+    }
 
     public componentDidMount() {
         this.animateMe(0)
 
         setTimeout(() => {
-            this.moveTo(500)
+            this.moveTo(this.minutesToSVG(15))
         }, 1000)
 
         setTimeout(() => {
-            this.moveTo(750)
+            this.moveTo(this.minutesToSVG(45))
         }, 3000)
     }
 
-    public moveTo(x: number) {
-        this.setState({ startX: this.state.targetX, targetX: x, t: 0 })
+    public moveTo(xInMinutes: number) {
+        this.setState({ startX: this.state.targetX, targetX: xInMinutes, t: 0 })
         this.isAnimating = true
     }
 
@@ -63,14 +91,45 @@ export default class Timeline extends Component<{}, ITimelineState> {
 
                     <BmwSVG x={x}></BmwSVG>
 
-                    <circle cx="0" cy="100" r="15" class="svg-stops" />
-                    <circle cx="250" cy="100" r="15" class="svg-stops" />
-                    <circle cx="500" cy="100" r="15" class="svg-stops" />
-                    <circle cx="750" cy="100" r="15" class="svg-stops" />
-                    <circle cx="1000" cy="100" r="15" class="svg-stops" />
+                    {
+                        this.state.stops.map(stop => {
+                            const x = this.minutesToSVG(stop.min)
+                            if (stop.emoji) {
+                                return <text x={x} y="100" class={`grow small`}>{stop.emoji}</text>
+                            } else {
+                                return <circle cx={x} cy="100" r="15" class="svg-stops" />
+                            }
+                        })
+                    }
 
-                    <text x="0" y="100" class="small">🏡</text>
-                    <text x="1000" y="100" class="small">📍</text>
+                    {
+
+                        this.state.stops.map(stop => {
+                            if (stop.emotion) {
+                                const x = this.minutesToSVG(stop.min)
+
+                                if (stop.emotion < 0.33333) {
+                                    return <text x={x} y="150" class={`small`}>😊</text>
+                                } else if (stop.emotion < 0.6666) {
+                                    return <text x={x} y="150" class={`small`}>😐</text>
+                                } else {
+                                    return <text x={x} y="150" class={`small`}>☹</text>
+                                }
+                            }
+                        })
+                    }
+
+                    {
+
+                        this.state.stops.map(stop => {
+                            if (stop.plannedAction) {
+                                const x = this.minutesToSVG(stop.min)
+
+                                return <text x={x} y="200" class={`small`}>{stop.plannedAction}</text>
+                            }
+                        })
+                    }
+
 
                 </svg>
             </div>

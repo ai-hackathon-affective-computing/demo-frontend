@@ -35,5 +35,7 @@
     stroke-width: 2;
     stroke-dasharray: 10;
     stroke-dashoffset: 5;
-
 }
+
+// .grow { transition: font-size .2s ease-in-out; }
+.grow:hover { font-size: 4em }

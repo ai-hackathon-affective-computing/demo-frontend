@@ -14,7 +14,7 @@ interface IBMWProps {
 }
 
 const bmwSVG = (props: IBMWProps) => (
-  <g class="bmw-svg" transform={globalTransformString} >
+  <g  class="bmw-svg" transform={globalTransformString} >
     <g transform={`translate(-${props.x * invertedScale} 0)`}>
       {/* <rect width={BMW_VIEWBOX_WIDTH} height={BMW_VIEWBOX_HEIGHT} style="fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)" /> */}
       <path
