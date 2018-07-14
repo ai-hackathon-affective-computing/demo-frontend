@@ -16,8 +16,8 @@ enum PlannedAction {
   MUSIC_A = "🎷",
   MUSIC_B = "🎹",
   ROUTE_NO = "🛑",
-  ROUTE_A = "🏕",
-  ROUTE_BEACH = "🏖"
+  ROUTE_A = "🌄",
+  ROUTE_BEACH = "🌇"
 }
 
 class TimelineStop {
@@ -26,7 +26,7 @@ class TimelineStop {
     public emoji?: string,
     public emotion?: number,
     public plannedAction?: PlannedAction
-  ) {}
+  ) { }
 }
 interface ITimelineState {
   startX: number
@@ -40,13 +40,15 @@ export default class Timeline extends Component<{}, ITimelineState> {
   // private keys: IKeyFrame[] = [{xStart: 0, xEnd: 1000}]
   // public state: ITimelineState = { keys: [{ xStart: 0, xEnd: 1000 }] }
   public state: ITimelineState = {
-    startX: 0,
-    targetX: 0,
+    startX: -200,
+    targetX: -200,
     t: 0,
     stops: [
-      new TimelineStop(0, "🏡", 0.25, PlannedAction.MUSIC_A),
-      new TimelineStop(60, "📍"),
-      new TimelineStop(15)
+      new TimelineStop(0, "🏡"),
+      // new TimelineStop(15, "📍"),
+      // new TimelineStop(30, "📍"),
+      // new TimelineStop(45, "📍"),
+      new TimelineStop(60, "🏁")
     ]
   }
   private isAnimating: boolean = false
@@ -54,17 +56,35 @@ export default class Timeline extends Component<{}, ITimelineState> {
     return (xInMinutes / 60) * TIMELINE_VIEWBOX_WIDTH
   }
 
+  public setMeta(xInMinutes: number, emotion?: number, plannedAction?: PlannedAction) {
+    const newStops = this.state.stops
+    let index = newStops.findIndex(s => s.min === xInMinutes)
+
+    if (index === -1) {
+      index = newStops.push(new TimelineStop(xInMinutes, "📍")) - 1
+    }
+
+    emotion && (newStops[index].emotion = emotion)
+    plannedAction && (newStops[index].plannedAction = plannedAction)
+
+    this.setState({stops: newStops})
+  }
+
   public componentDidMount() {
     this.animateMe(0)
 
     // TESTING
     setTimeout(() => {
-      this.moveTo(15)
-    }, 1000)
+      this.moveTo(0)
+    }, 0)
 
-    setTimeout(() => {
-      this.moveTo(45)
-    }, 3000)
+    // setTimeout(() => {
+    //   this.setMeta(15, undefined, PlannedAction.MUSIC_A)
+    // }, 1000)
+
+    // setTimeout(() => {
+    //   this.moveTo(45)
+    // }, 3000)
   }
 
   public moveTo(xInMinutes: number) {
@@ -87,9 +107,9 @@ export default class Timeline extends Component<{}, ITimelineState> {
     this.animateMe(dt)
   }
 
-  public render({}, { targetX, startX, t, stops }: ITimelineState) {
+  public render({ }, { targetX, startX, t, stops }: ITimelineState) {
     const delta = targetX - startX
-    const x = startX + easing.easeInOutCubic(t) * delta
+    const bmwXPosition = startX + easing.easeInOutCubic(t) * delta
     const roadPath = `M${-TIMELINE_PADDING_X} 100 L${TIMELINE_VIEWBOX_WIDTH + TIMELINE_PADDING_X} 100 Z`
 
     const EMOTION_THRESHOLD_SAD = 0.3333
@@ -104,15 +124,17 @@ export default class Timeline extends Component<{}, ITimelineState> {
           <path d={roadPath} class="svg-street" />
           <path d={roadPath} class="svg-street-dash" />
 
-          <BmwSVG x={x} />
+          <BmwSVG x={bmwXPosition} />
 
           {
             stops.map(stop => {
               const x = this.minutesToSVG(stop.min)
+              const isBig = Math.abs(bmwXPosition - x) < 50
+              const emojiPosition = isBig ? 56 : 73
               return (<g> {stop.emoji ? (
-                <text x={x} y="100" class={`grow small`}>{stop.emoji}</text>
+                <text x={x} y={emojiPosition} class={`small ${isBig ? "grow" : ""}`}>{stop.emoji}</text>
               ) : (
-                  <circle cx={x} cy="100" r="15" class="svg-stops" />
+                  <circle cx={x} cy="100" r="15" class={`svg-stops ${isBig ? "grow-svg" : ""}`} />
                 )}
 
                 {

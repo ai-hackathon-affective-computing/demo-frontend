@@ -38,4 +38,10 @@
 }
 
 // .grow { transition: font-size .2s ease-in-out; }
-.grow:hover { font-size: 4em }
+.grow {
+    font-size: 4em
+}
+
+.grow-svg {
+   stroke-width: 40
+}
