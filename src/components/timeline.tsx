@@ -74,7 +74,10 @@ export default class Timeline extends Component<{}, ITimelineState> {
     window.addEventListener("keydown", evt => {
       switch (evt.keyCode) {
         case KeyCode.Space:
-          this.mockAnimation(this.animationStep++)
+          if (this.state.startStopButtonPressed)
+            this.mockAnimation(this.animationStep++)
+          else
+            this.onStartButtonPressed()
           break
       }
     })
@@ -83,6 +86,7 @@ export default class Timeline extends Component<{}, ITimelineState> {
   }
 
   private mockAnimation(step: number) {
+    console.log(`mockAnimation = ${step}`)
     setTimeout(() => {
       this.moveTo(15 * step)
     }, 0)
@@ -92,8 +96,8 @@ export default class Timeline extends Component<{}, ITimelineState> {
     }, 0
 
     setTimeout(() => {
-      this.setMeta(15 * step, Math.random(), step + 1)
-    }, 2000)
+        this.setMeta(15 * step, Math.random(), step + 1)
+      }, 2000)
   }
 
   public moveTo(xInMinutes: number) {
