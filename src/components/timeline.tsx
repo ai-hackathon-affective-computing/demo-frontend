@@ -14,6 +14,7 @@ import backend from "../utils/backend"
 import { MusicState, RouteState, IActionState } from "../utils/types"
 import Webcam, { webcamSingleton } from "./webcam"
 import Youtube from "./youtube"
+import "preact/debug"
 
 const SPEED_DECAY = 0.001
 

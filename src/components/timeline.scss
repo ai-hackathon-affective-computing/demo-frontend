@@ -9,6 +9,10 @@
     min-height: 35%;
 }
 
+svg g {
+  content: "";
+}
+
 .timeline-svg {
     width: 100%;
     height: auto; // position: absolute;
