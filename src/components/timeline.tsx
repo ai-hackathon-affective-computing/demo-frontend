@@ -9,6 +9,7 @@ import {
   TIMELINE_PADDING_X,
   TIMELINE_BASELINE_Y_OFFSET
 } from "./timeline.constants"
+import KeyCode from "../utils/keycode"
 
 const SPEED_DECAY = 0.001
 
@@ -68,6 +69,14 @@ export default class Timeline extends Component<{}, ITimelineState> {
   }
 
   public componentDidMount() {
+    window.addEventListener("keydown", evt => {
+      switch (evt.keyCode) {
+        case KeyCode.Space:
+          // #TODO call timeline advance
+          break
+      }
+    })
+
     this.animateMe(0)
   }
 
