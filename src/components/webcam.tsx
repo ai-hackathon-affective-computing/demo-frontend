@@ -6,8 +6,8 @@ const hiddenCanvasID = "hiddenCanvas"
 
 interface IWebcamProps {
   class?: string
-  uploadFrameEveryMS: number
-  imageDimensions: { width: number, height: number }
+  uploadFrameInterval: number
+  imageDimensions: { width: number; height: number }
 }
 
 interface IWebcamState {
@@ -27,7 +27,7 @@ export default class Webcam extends Component<IWebcamProps, IWebcamState> {
       this.videoStream = new MediaStream(stream)
       this.video = document.querySelector("video") as HTMLVideoElement
       this.video.srcObject = this.videoStream
-      this.video.onloadedmetadata = () => this.video!.play()
+      this.video.onloadedmetadata = async () => this.video!.play()
     } catch (e) {
       console.error(e)
     }
@@ -39,13 +39,15 @@ export default class Webcam extends Component<IWebcamProps, IWebcamState> {
   }
 
   private setupFrameUploader() {
-    this.canvas = document.querySelector(`#${hiddenCanvasID}`)as HTMLCanvasElement
+    this.canvas = document.querySelector(
+      `#${hiddenCanvasID}`
+    ) as HTMLCanvasElement
     if (!this.canvas) return this.err("Canvas")
     this.ctx = this.canvas.getContext("2d")
 
     const uploadFrameTimer = setInterval(() => {
       this.takePicture()
-    }, this.props.uploadFrameEveryMS)
+    }, this.props.uploadFrameInterval)
     this.setState({ uploadFrameTimer })
   }
 
@@ -78,7 +80,7 @@ export default class Webcam extends Component<IWebcamProps, IWebcamState> {
     const { width, height } = props.imageDimensions
     return (
       <div class={props.class}>
-        <video width={width} height={height}></video>
+        <video width={width} height={height} />
         <canvas id={hiddenCanvasID} width={width} height={height} />
       </div>
     )

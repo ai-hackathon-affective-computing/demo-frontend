@@ -1,20 +1,27 @@
 import { h, Component } from "preact"
 import "./bmw.svg.scss"
-import { TIMELINE_VIEWBOX_HEIGHT, TIMELINE_VIEWBOX_WIDTH } from "./timeline.constants"
+import {
+  TIMELINE_VIEWBOX_HEIGHT,
+  TIMELINE_VIEWBOX_WIDTH
+} from "./timeline.constants"
 
 const BMW_VIEWBOX_WIDTH = 734.33
 const BMW_VIEWBOX_HEIGHT = 629
 const scale = 0.2
 const invertedScale = 1.0 / scale
-// tslint:disable-next-line:no-magic-numbers
-const globalTransformString = `translate(${(BMW_VIEWBOX_WIDTH * 0.5) * scale} ${(TIMELINE_VIEWBOX_HEIGHT - 40) * 0.5 - BMW_VIEWBOX_HEIGHT * 0.5 * scale}) scale(-${scale},${scale})`
+// tslint:disable:no-magic-numbers
+const globalTransformString = `translate(${BMW_VIEWBOX_WIDTH *
+  0.5 *
+  scale} ${(TIMELINE_VIEWBOX_HEIGHT - 40) * 0.5 -
+  BMW_VIEWBOX_HEIGHT * 0.5 * scale}) scale(-${scale},${scale})`
+// tslint:enable:no-magic-numbers
 
 interface IBMWProps {
   x: number
 }
 
 const bmwSVG = (props: IBMWProps) => (
-  <g  class="bmw-svg" transform={globalTransformString} >
+  <g class="bmw-svg" transform={globalTransformString}>
     <g transform={`translate(-${props.x * invertedScale} 0)`}>
       {/* <rect width={BMW_VIEWBOX_WIDTH} height={BMW_VIEWBOX_HEIGHT} style="fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)" /> */}
       <path
