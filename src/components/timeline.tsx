@@ -93,6 +93,11 @@ export default class Timeline extends Component<{}, ITimelineState> {
       this.setMeta(0, 0.5, PlannedAction.MUSIC_A)
     }, 3000)
 
+
+    setTimeout(() => {
+      this.setMeta(0, 0.5, PlannedAction.MUSIC_A)
+    }, 5000)
+
     // setTimeout(() => {
     //   this.moveTo(45)
     // }, 3000)

@@ -14,26 +14,35 @@
 
 @keyframes fadeInTop {
     from {
-        transform: translate(-0.7em, -10.3em); 
+        transform: translate(-0.7em, -10.3em);
     }
     to {
-        transform: translate(-0.7em, 0.3em); 
+        transform: translate(-0.7em, 0.3em);
+    }
+}
+
+@keyframes fadeInRoad {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
     }
 }
 
 @keyframes fadeInBottom {
     from {
-        transform: translate(-0.7em, 10.3em); 
+        transform: translate(-0.7em, 10.3em);
     }
     to {
-        transform: translate(-0.7em, 0.3em); 
+        transform: translate(-0.7em, 0.3em);
     }
 }
 
 .timestop-top {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 2em;
-    transform: translate(-0.7em, 0.3em); 
+    transform: translate(-0.7em, 0.3em);
     animation: fadeInTop ease-in-out 1;
     animation-fill-mode: forwards;
     animation-duration: 1s;
@@ -42,7 +51,7 @@
 .timestop-bottom {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 2em;
-    transform: translate(-0.7em, 0.3em); 
+    transform: translate(-0.7em, 0.3em);
     animation: fadeInBottom ease-in-out 1;
     animation-fill-mode: forwards;
     animation-duration: 1s;
@@ -56,8 +65,11 @@
 
 .svg-street {
     stroke: #aaa;
-    fill: red;
     stroke-width: 20;
+    opacity:0;
+    animation: fadeInRoad ease-in-out 1;
+    animation-fill-mode: forwards;
+    animation-duration: 1s;
 }
 
 .svg-street-dash {
@@ -65,6 +77,10 @@
     stroke-width: 2;
     stroke-dasharray: 10;
     stroke-dashoffset: 5;
+    opacity:0;
+    animation: fadeInRoad ease-in-out 1;
+    animation-fill-mode: forwards;
+    animation-duration: 1s;
 }
 
 // .grow { transition: font-size .2s ease-in-out; }
