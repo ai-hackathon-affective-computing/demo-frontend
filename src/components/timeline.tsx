@@ -37,6 +37,7 @@ interface ITimelineState {
   t: number
   stops: TimelineStop[]
   startStopButtonPressed: boolean
+  audioIndexToPlay: number
 }
 
 export default class Timeline extends Component<{}, ITimelineState> {
@@ -47,7 +48,8 @@ export default class Timeline extends Component<{}, ITimelineState> {
     targetX: -200,
     t: 0,
     stops: [],
-    startStopButtonPressed: false
+    startStopButtonPressed: false,
+    audioIndexToPlay: -1
   }
 
   private animationStep: number = 0
@@ -68,7 +70,7 @@ export default class Timeline extends Component<{}, ITimelineState> {
     emotion && (newStops[index].emotion = emotion)
     plannedAction && (newStops[index].plannedAction = plannedAction)
 
-    this.setState({ stops: newStops })
+    this.setState({ stops: newStops, audioIndexToPlay: plannedAction })
   }
 
   public componentDidMount() {
@@ -86,26 +88,28 @@ export default class Timeline extends Component<{}, ITimelineState> {
   }
 
   private advanceOneStep(step: number) {
-    if (step > 4 || this.isAdvancing)
+    if (step > 5 || this.isAdvancing)
       return
 
     this.isAdvancing = true
 
     setTimeout(() => {
-      this.moveTo(15 * step)
+      this.moveTo(12 * step)
     }, 0)
 
-    if (step < 4) {
+    if (step < 5) {
       setTimeout(() => {
-        this.setMeta(15 * step)
+        this.setMeta(12 * step)
       }, 0)
 
       setTimeout(() => {
-        this.setMeta(15 * step, Math.random(), step + 1)
+        this.setMeta(12 * step, Math.random(), step + 1)
         this.animationStep++
         this.isAdvancing = false
 
       }, 2000)
+    } else {
+      this.setState({audioIndexToPlay: 9})
     }
   }
 
@@ -153,7 +157,7 @@ export default class Timeline extends Component<{}, ITimelineState> {
     this.animateMe(dt)
   }
 
-  public render({ }, { targetX, startX, t, stops, startStopButtonPressed }: ITimelineState) {
+  public render({ }, { targetX, startX, t, stops, startStopButtonPressed, audioIndexToPlay }: ITimelineState) {
     const delta = targetX - startX
     const bmwXPosition = startX + easing.easeInOutCubic(t) * delta
     const roadPath = `M${-TIMELINE_PADDING_X} ${100 + TIMELINE_BASELINE_Y_OFFSET} L${TIMELINE_VIEWBOX_WIDTH + TIMELINE_PADDING_X} ${100 + TIMELINE_BASELINE_Y_OFFSET} Z`
@@ -162,9 +166,17 @@ export default class Timeline extends Component<{}, ITimelineState> {
     const EMOTION_THRESHOLD_NEUTRAL = 0.6666
     return (
       <div class="timeline">
+
         {!startStopButtonPressed && (
           <img class="starstopbutton" src="./assets/startstopbutton.png" onClick={() => this.onStartButtonPressed()} />
         )}
+
+        {
+            startStopButtonPressed && audioIndexToPlay !== -1 && (
+              <audio autoplay="true" src={`https://s3-eu-west-1.amazonaws.com/affective-computing/sounds/action_${audioIndexToPlay}.mp3`} />
+            )
+        }
+
         {startStopButtonPressed && (<svg
           class="timeline-svg"
           viewBox={`${-TIMELINE_PADDING_X} 0 ${TIMELINE_VIEWBOX_WIDTH +
@@ -176,6 +188,7 @@ export default class Timeline extends Component<{}, ITimelineState> {
           <BmwSVG x={bmwXPosition} />
 
           {
+            // https://s3-eu-west-1.amazonaws.com/affective-computing/sounds/action_1.mp3
             stops.map(stop => {
               const x = this.minutesToSVG(stop.min)
               const isBig = Math.abs(bmwXPosition - x) < 50
