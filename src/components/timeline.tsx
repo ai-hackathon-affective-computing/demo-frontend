@@ -57,17 +57,18 @@ export default class Timeline extends Component<{}, ITimelineState> {
   public componentDidMount() {
     this.animateMe(0)
 
+    // TESTING
     setTimeout(() => {
-      this.moveTo(this.minutesToSVG(15))
+      this.moveTo(15)
     }, 1000)
 
     setTimeout(() => {
-      this.moveTo(this.minutesToSVG(45))
+      this.moveTo(45)
     }, 3000)
   }
 
   public moveTo(xInMinutes: number) {
-    this.setState({ startX: this.state.targetX, targetX: xInMinutes, t: 0 })
+    this.setState({ startX: this.state.targetX, targetX: this.minutesToSVG(xInMinutes), t: 0 })
     this.isAnimating = true
   }
 
@@ -89,6 +90,10 @@ export default class Timeline extends Component<{}, ITimelineState> {
   public render({}, { targetX, startX, t, stops }: ITimelineState) {
     const delta = targetX - startX
     const x = startX + easing.easeInOutCubic(t) * delta
+    const roadPath = `M${-TIMELINE_PADDING_X} 100 L${TIMELINE_VIEWBOX_WIDTH + TIMELINE_PADDING_X} 100 Z`
+
+    const EMOTION_THRESHOLD_SAD = 0.3333
+    const EMOTION_THRESHOLD_NEUTRAL = 0.6666
     return (
       <div class="timeline">
         <svg
@@ -96,46 +101,39 @@ export default class Timeline extends Component<{}, ITimelineState> {
           viewBox={`${-TIMELINE_PADDING_X} 0 ${TIMELINE_VIEWBOX_WIDTH +
             2 * TIMELINE_PADDING_X} ${TIMELINE_VIEWBOX_HEIGHT}`}
         >
-          <path d="M0 100 L1000 100 Z" class="svg-street" />
-          <path d="M0 100 L1000 100 Z" class="svg-street-dash" />
+          <path d={roadPath} class="svg-street" />
+          <path d={roadPath} class="svg-street-dash" />
 
           <BmwSVG x={x} />
 
-          {stops.map(stop => {
-            const x = this.minutesToSVG(stop.min)
-            return stop.emoji ? (
-              <text x={x} y="100" class={`grow small`}>
-                {stop.emoji}
-              </text>
-            ) : (
-              <circle cx={x} cy="100" r="15" class="svg-stops" />
-            )
-          })}
-
-          {stops.map(stop => {
-            if (stop.emotion === undefined) return
-            const x = this.minutesToSVG(stop.min)
-
-            return (
-              <text x={x} y="150" class={`small`}>
-                {(stop.emotion < 0.33333 && "😊") ||
-                  (stop.emotion < 0.66666 && "😐") ||
-                  "☹"}
-              </text>
-            )
-          })}
-
-          {stops.map(stop => {
-            if (stop.plannedAction) {
+          {
+            stops.map(stop => {
               const x = this.minutesToSVG(stop.min)
+              return (<g> {stop.emoji ? (
+                <text x={x} y="100" class={`grow small`}>{stop.emoji}</text>
+              ) : (
+                  <circle cx={x} cy="100" r="15" class="svg-stops" />
+                )}
 
-              return (
-                <text x={x} y="200" class={`small`}>
-                  {stop.plannedAction}
-                </text>
-              )
-            }
-          })}
+                {
+                  stop.emotion && (
+                    <text x={x} y="150" class={`small`}>
+                      {(stop.emotion < EMOTION_THRESHOLD_SAD && "😕") ||
+                        (stop.emotion < EMOTION_THRESHOLD_NEUTRAL && "😐") ||
+                        "😊"}
+                    </text>
+                  )
+                }
+
+                {
+                  stop.plannedAction && (
+                    <text x={x} y="200" class={`small`}>{stop.plannedAction}</text>
+                  )
+                }
+              </g>)
+            })
+          }
+
         </svg>
       </div>
     )

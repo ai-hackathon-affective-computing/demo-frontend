@@ -10,10 +10,10 @@ const BMW_VIEWBOX_HEIGHT = 629
 const scale = 0.2
 const invertedScale = 1.0 / scale
 // tslint:disable:no-magic-numbers
-const globalTransformString = `translate(${BMW_VIEWBOX_WIDTH *
-  0.5 *
-  scale} ${(TIMELINE_VIEWBOX_HEIGHT - 40) * 0.5 -
-  BMW_VIEWBOX_HEIGHT * 0.5 * scale}) scale(-${scale},${scale})`
+const globalTransformString = `translate(
+    ${BMW_VIEWBOX_WIDTH * 0.5 * scale}
+    ${(TIMELINE_VIEWBOX_HEIGHT ) * 0.5 - BMW_VIEWBOX_HEIGHT * 0.5 * scale})
+    scale(-${scale},${scale})`
 // tslint:enable:no-magic-numbers
 
 interface IBMWProps {
