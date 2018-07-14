@@ -33,8 +33,8 @@ interface ITimelineState {
   startX: number
   targetX: number
   t: number
-
   stops: TimelineStop[]
+  startStopButtonPressed: boolean
 }
 
 export default class Timeline extends Component<{}, ITimelineState> {
@@ -44,13 +44,8 @@ export default class Timeline extends Component<{}, ITimelineState> {
     startX: -200,
     targetX: -200,
     t: 0,
-    stops: [
-      // new TimelineStop(0, "🏡"),
-      // new TimelineStop(15, "📍"),
-      // new TimelineStop(30, "📍"),
-      // new TimelineStop(45, "📍"),
-      // new TimelineStop(60, "🏁")
-    ]
+    stops: [],
+    startStopButtonPressed: false
   }
   private isAnimating: boolean = false
   private minutesToSVG(xInMinutes: number) {
@@ -75,6 +70,21 @@ export default class Timeline extends Component<{}, ITimelineState> {
     this.animateMe(0)
 
     // TESTING
+    
+
+    // setTimeout(() => {
+    //   this.moveTo(45)
+    // }, 3000)
+  }
+
+  public moveTo(xInMinutes: number) {
+    this.setState({ startX: this.state.targetX, targetX: this.minutesToSVG(xInMinutes), t: 0 })
+    this.isAnimating = true
+  }
+
+  private onStartButtonPressed() {
+    this.setState({startStopButtonPressed: true})
+
     setTimeout(() => {
       this.setState({ stops: [new TimelineStop(0, "🏡")] })
     }, 0)
@@ -97,15 +107,6 @@ export default class Timeline extends Component<{}, ITimelineState> {
     setTimeout(() => {
       this.setMeta(0, 0.5, PlannedAction.MUSIC_A)
     }, 5000)
-
-    // setTimeout(() => {
-    //   this.moveTo(45)
-    // }, 3000)
-  }
-
-  public moveTo(xInMinutes: number) {
-    this.setState({ startX: this.state.targetX, targetX: this.minutesToSVG(xInMinutes), t: 0 })
-    this.isAnimating = true
   }
 
   public async animateMe(previous: number) {
@@ -123,7 +124,7 @@ export default class Timeline extends Component<{}, ITimelineState> {
     this.animateMe(dt)
   }
 
-  public render({ }, { targetX, startX, t, stops }: ITimelineState) {
+  public render({ }, { targetX, startX, t, stops, startStopButtonPressed }: ITimelineState) {
     const delta = targetX - startX
     const bmwXPosition = startX + easing.easeInOutCubic(t) * delta
     const roadPath = `M${-TIMELINE_PADDING_X} ${100 + TIMELINE_BASELINE_Y_OFFSET} L${TIMELINE_VIEWBOX_WIDTH + TIMELINE_PADDING_X} ${100 + TIMELINE_BASELINE_Y_OFFSET} Z`
@@ -132,7 +133,10 @@ export default class Timeline extends Component<{}, ITimelineState> {
     const EMOTION_THRESHOLD_NEUTRAL = 0.6666
     return (
       <div class="timeline">
-        <svg
+        {!startStopButtonPressed && (
+          <img class="starstopbutton" src="./assets/startstopbutton.png" onClick={() => this.onStartButtonPressed()}/>
+        )}
+        {startStopButtonPressed && (<svg
           class="timeline-svg"
           viewBox={`${-TIMELINE_PADDING_X} 0 ${TIMELINE_VIEWBOX_WIDTH +
             2 * TIMELINE_PADDING_X} ${TIMELINE_VIEWBOX_HEIGHT}`}
@@ -173,7 +177,7 @@ export default class Timeline extends Component<{}, ITimelineState> {
             })
           }
 
-        </svg>
+        </svg>)}
       </div>
     )
   }

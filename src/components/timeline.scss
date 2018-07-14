@@ -5,6 +5,8 @@
     align-items: flex-start;
     flex-wrap: wrap; // border: 1px solid orange;
     position: relative;
+
+    min-height: 35%;
 }
 
 .timeline-svg {
@@ -90,4 +92,20 @@
 
 .grow-svg {
     stroke-width: 40
+}
+
+.starstopbutton {
+    margin-left:auto;
+    margin-right:auto;
+
+    width:10%;
+    height:auto;
+
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
 }
