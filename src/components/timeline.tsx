@@ -13,6 +13,7 @@ import KeyCode from "../utils/keycode"
 import backend from "../utils/backend"
 import { MusicState, RouteState, IActionState } from "../utils/types"
 import Webcam, { webcamSingleton } from "./webcam"
+import Youtube from "./youtube"
 
 const SPEED_DECAY = 0.001
 
@@ -260,6 +261,10 @@ export default class Timeline extends Component<{}, ITimelineState> {
           }
 
         </svg>)}
+
+        {
+          <Youtube index={audioIndexToPlay}/>
+        }
       </div>
     )
   }
