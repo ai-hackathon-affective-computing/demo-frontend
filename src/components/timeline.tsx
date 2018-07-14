@@ -49,6 +49,8 @@ export default class Timeline extends Component<{}, ITimelineState> {
     stops: [],
     startStopButtonPressed: false
   }
+
+  private animationStep: number = 0
   private isAnimating: boolean = false
   private minutesToSVG(xInMinutes: number) {
     return (xInMinutes / 60) * TIMELINE_VIEWBOX_WIDTH
@@ -72,12 +74,26 @@ export default class Timeline extends Component<{}, ITimelineState> {
     window.addEventListener("keydown", evt => {
       switch (evt.keyCode) {
         case KeyCode.Space:
-          // #TODO call timeline advance
+          this.mockAnimation(this.animationStep++)
           break
       }
     })
 
     this.animateMe(0)
+  }
+
+  private mockAnimation(step: number) {
+    setTimeout(() => {
+      this.moveTo(15 * step)
+    }, 0)
+
+    setTimeout(() => {
+      this.setMeta(15 * step)
+    }, 0
+
+    setTimeout(() => {
+      this.setMeta(15 * step, Math.random(), step + 1)
+    }, 2000)
   }
 
   public moveTo(xInMinutes: number) {
@@ -101,38 +117,6 @@ export default class Timeline extends Component<{}, ITimelineState> {
     setTimeout(() => {
       this.moveTo(0)
     }, 2000)
-
-
-    setTimeout(() => {
-      this.setMeta(0, 0.5, 1)
-    }, 5000)
-
-    // STEP #1
-    setTimeout(() => {
-      this.moveTo(15)
-    }, 7000)
-
-    setTimeout(() => {
-      this.setMeta(15)
-    }, 7000)
-
-    setTimeout(() => {
-      this.setMeta(15, 1.0, 2)
-    }, 9000)
-
-
-    // STEP #2
-    setTimeout(() => {
-      this.moveTo(30)
-    }, 11000)
-
-    setTimeout(() => {
-      this.setMeta(30)
-    }, 11000)
-
-    setTimeout(() => {
-      this.setMeta(30, 0.1, 3)
-    }, 13000)
   }
 
   public async animateMe(previous: number) {
