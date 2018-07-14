@@ -14,6 +14,8 @@ interface IWebcamState {
   uploadFrameTimer: number
 }
 
+export let webcamSingleton: Webcam
+
 export default class Webcam extends Component<IWebcamProps, IWebcamState> {
   public videoStream?: MediaStream // usermedia stream
   private video?: HTMLVideoElement // video html element
@@ -45,14 +47,15 @@ export default class Webcam extends Component<IWebcamProps, IWebcamState> {
     if (!this.canvas) return this.err("Canvas")
     this.ctx = this.canvas.getContext("2d")
 
-    const uploadFrameTimer = setInterval(
-      async () => this.takePicture(),
-      this.props.uploadFrameInterval
-    )
-    this.setState({ uploadFrameTimer })
+    // const uploadFrameTimer = setInterval(
+    //   async () => this.takePicture(),
+    //   this.props.uploadFrameInterval
+    // )
+    // this.setState({ uploadFrameTimer })
   }
 
   public componentDidMount() {
+    webcamSingleton = this
     this.setupVideoRecorder()
     this.setupFrameUploader()
   }

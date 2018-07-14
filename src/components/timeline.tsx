@@ -12,6 +12,7 @@ import {
 import KeyCode from "../utils/keycode"
 import backend from "../utils/backend"
 import { MusicState, RouteState, IActionState } from "../utils/types"
+import Webcam, { webcamSingleton } from "./webcam"
 
 const SPEED_DECAY = 0.001
 
@@ -98,6 +99,7 @@ export default class Timeline extends Component<{}, ITimelineState> {
   }
 
   public componentDidMount() {
+
     window.addEventListener("keydown", evt => {
       switch (evt.keyCode) {
         case KeyCode.Space:
@@ -125,7 +127,9 @@ export default class Timeline extends Component<{}, ITimelineState> {
       setTimeout(() => {
         this.setMeta(12 * step)
       }, 0)
-
+      if (step < 5) {
+        const webCamResult = await webcamSingleton.takePicture()
+      }
       const nextAction = await backend.getNextAction(this.state.actionState)
       if (step < 5) {
         if (remainingActions.indexOf(nextAction.action) === -1) {
