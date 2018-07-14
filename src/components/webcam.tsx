@@ -1,6 +1,6 @@
 import { h, Component } from "preact"
 import "./webcam.scss"
-import s3 from "../utils/s3"
+import backend from "../utils/backend"
 
 const hiddenCanvasID = "hiddenCanvas"
 
@@ -45,9 +45,10 @@ export default class Webcam extends Component<IWebcamProps, IWebcamState> {
     if (!this.canvas) return this.err("Canvas")
     this.ctx = this.canvas.getContext("2d")
 
-    const uploadFrameTimer = setInterval(() => {
-      this.takePicture()
-    }, this.props.uploadFrameInterval)
+    const uploadFrameTimer = setInterval(
+      async () => this.takePicture(),
+      this.props.uploadFrameInterval
+    )
     this.setState({ uploadFrameTimer })
   }
 
@@ -67,7 +68,7 @@ export default class Webcam extends Component<IWebcamProps, IWebcamState> {
 
     const blob = await this.getBlob(canvas)
     if (!blob) return this.err("Canvas Blob")
-    await s3.write(`photos/${Date.now()}`, blob)
+    await backend.putS3(`photos/${Date.now()}`, blob)
 
     return true
   }

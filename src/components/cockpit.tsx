@@ -1,6 +1,7 @@
 import { h, Component } from "preact"
 import "./cockpit.scss"
 import Webcam from "./webcam"
+import backend from "../utils/backend"
 
 interface ICockpitState {
   uploadFrameInterval: number
@@ -10,6 +11,14 @@ export default class Cockpit extends Component<{}, ICockpitState> {
   public state: ICockpitState = {
     uploadFrameInterval: 5e3,
     fetchActionsInterval: 10e3
+  }
+
+  public componentDidMount() {
+    setInterval(async () => {
+      // #TODO do something with that
+      const nextAction = await backend.getNextAction()
+      console.log(`Next Action: ${JSON.stringify(nextAction)}`)
+    }, this.state.fetchActionsInterval)
   }
 
   public render({}, { uploadFrameInterval }: ICockpitState) {
