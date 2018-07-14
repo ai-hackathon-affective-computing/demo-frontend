@@ -37,7 +37,7 @@ interface ITimelineState {
   t: number
   stops: TimelineStop[]
   startStopButtonPressed: boolean
-  audioIndexToPlay: number
+  audioIndexToPlay?: number
 }
 
 export default class Timeline extends Component<{}, ITimelineState> {
@@ -173,6 +173,7 @@ export default class Timeline extends Component<{}, ITimelineState> {
 
         {
             startStopButtonPressed && audioIndexToPlay !== -1 && (
+              // @ts-ignore
               <audio autoplay="true" src={`https://s3-eu-west-1.amazonaws.com/affective-computing/sounds/action_${audioIndexToPlay}.mp3`} />
             )
         }
