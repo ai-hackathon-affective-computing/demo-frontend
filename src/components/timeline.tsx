@@ -99,15 +99,19 @@ export default class Timeline extends Component<{}, ITimelineState> {
     this.setState({ stops: newStops, audioIndexToPlay: plannedAction })
   }
 
+  private onProgress() {
+    if (this.state.startStopButtonPressed)
+      this.advanceOneStep(this.animationStep)
+    else
+      this.onStartButtonPressed()
+  }
+
   public componentDidMount() {
 
     window.addEventListener("keydown", evt => {
       switch (evt.keyCode) {
         case KeyCode.Space:
-          if (this.state.startStopButtonPressed)
-            this.advanceOneStep(this.animationStep)
-          else
-            this.onStartButtonPressed()
+          this.onProgress()
           break
       }
     })
@@ -206,10 +210,10 @@ export default class Timeline extends Component<{}, ITimelineState> {
     const EMOTION_THRESHOLD_SAD = 0.3333
     const EMOTION_THRESHOLD_NEUTRAL = 0.6666
     return (
-      <div class="timeline">
+      <div class="timeline" onTouchEnd={ () => this.onProgress()} onClick = {() => this.onProgress()}>
 
         {!startStopButtonPressed && (
-          <img class="starstopbutton" src="./assets/startstopbutton.png" onClick={() => this.onStartButtonPressed()} />
+          <img class="starstopbutton" src="./assets/startstopbutton.png" />
         )}
 
         {
