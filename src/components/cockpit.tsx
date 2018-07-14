@@ -1,27 +1,12 @@
 import { h, Component } from "preact"
 import "./cockpit.scss"
 import Webcam from "./webcam"
-import backend from "../utils/backend"
 
-interface ICockpitState {
+interface ICockpitProps {
   uploadFrameInterval: number
-  fetchActionsInterval: number
 }
-export default class Cockpit extends Component<{}, ICockpitState> {
-  public state: ICockpitState = {
-    uploadFrameInterval: 5e3,
-    fetchActionsInterval: 10e3
-  }
-
-  public componentDidMount() {
-    setInterval(async () => {
-      // #TODO do something with that
-      const nextAction = await backend.getNextAction()
-      console.log(`Next Action: ${JSON.stringify(nextAction)}`)
-    }, this.state.fetchActionsInterval)
-  }
-
-  public render({}, { uploadFrameInterval }: ICockpitState) {
+export default class Cockpit extends Component<ICockpitProps> {
+  public render({ uploadFrameInterval }: ICockpitProps) {
     return (
       <div class="cockpit">
         <img class="overlap cockpit-image" src="./assets/cockpit-mirror.png" />

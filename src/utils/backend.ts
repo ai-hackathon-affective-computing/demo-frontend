@@ -1,15 +1,13 @@
 import { stringify } from "query-string"
 import { get, put } from "improved/dist/ajax"
+import { IActionState } from "./types"
 
 const lambdaBaseURL =
   "https://ngstvf71w5.execute-api.eu-west-1.amazonaws.com/dev"
 
 export default class Backend {
-  public static async getNextAction() {
-    const qs = stringify({
-      music_on: 1,
-      step: 0
-    })
+  public static async getNextAction(state: IActionState) {
+    const qs = stringify(state)
     const url = `${lambdaBaseURL}/next_action?${qs}`
     return get(url)
   }
