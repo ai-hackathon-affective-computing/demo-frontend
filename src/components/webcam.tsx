@@ -4,17 +4,21 @@ import s3 from "../utils/s3"
 
 const hiddenCanvasID = "hiddenCanvas"
 
-// tslint:disable-next-line:no-magic-numbers
-const imageDimensions = [ 512, 512 ]
-
 interface IWebcamProps {
   class?: string
+  uploadFrameEveryMS: number
+  imageDimensions: { width: number, height: number }
 }
 
-export default class Webcam extends Component<IWebcamProps> {
+interface IWebcamState {
+  uploadFrameTimer: number
+}
+
+export default class Webcam extends Component<IWebcamProps, IWebcamState> {
   public videoStream?: MediaStream // usermedia stream
   private video?: HTMLVideoElement // video html element
   private canvas?: HTMLCanvasElement
+  private ctx?: CanvasRenderingContext2D | null
 
   private async setupVideoRecorder() {
     // request user permission
@@ -29,31 +33,38 @@ export default class Webcam extends Component<IWebcamProps> {
     }
   }
 
+  private err(s: string) {
+    console.error(`${s} not available`)
+    return false
+  }
+
+  private setupFrameUploader() {
+    this.canvas = document.querySelector(`#${hiddenCanvasID}`)as HTMLCanvasElement
+    if (!this.canvas) return this.err("Canvas")
+    this.ctx = this.canvas.getContext("2d")
+
+    const uploadFrameTimer = setInterval(() => {
+      this.takePicture()
+    }, this.props.uploadFrameEveryMS)
+    this.setState({ uploadFrameTimer })
+  }
+
   public componentDidMount() {
     this.setupVideoRecorder()
+    this.setupFrameUploader()
   }
 
   public async takePicture(): Promise<boolean> {
-    const err = (s: string) => {
-      console.error(`${s} not available`)
-      return false
-    }
+    const { canvas, ctx, video } = this
+    if (!canvas) return this.err("Canvas")
+    if (!ctx) return this.err("2DContext")
+    if (!video) return this.err("Video")
 
-    if (!this.videoStream) return err("video stream")
-    if (!this.video) return err("video")
+    const { width, height } = this.props.imageDimensions
+    ctx.drawImage(video, 0, 0, width, height, 0, 0, width, height)
 
-    this.canvas = document.querySelector(`#${hiddenCanvasID}`)as HTMLCanvasElement
-    const { canvas } = this
-    if (!canvas) return err("hidden canvas")
-
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return err("canvas' 2DContext")
-
-    const [ x, y ] = imageDimensions
-    ctx.drawImage(this.video, 0, 0, x, y, 0, 0, x, y)
     const blob = await this.getBlob(canvas)
-
-    if (!blob) return err("video frame blob")
+    if (!blob) return this.err("Canvas Blob")
     await s3.write(`photos/${Date.now()}`, blob)
 
     return true
@@ -64,10 +75,11 @@ export default class Webcam extends Component<IWebcamProps> {
   }
 
   public render(props: IWebcamProps) {
+    const { width, height } = props.imageDimensions
     return (
       <div class={props.class}>
-        <video width="450" height="450"></video>
-        <canvas id={hiddenCanvasID} />
+        <video width={width} height={height}></video>
+        <canvas id={hiddenCanvasID} width={width} height={height} />
       </div>
     )
   }
