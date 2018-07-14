@@ -12,21 +12,22 @@ import {
 
 const SPEED_DECAY = 0.001
 
-enum PlannedAction {
-  MUSIC_NO = "🔇",
-  MUSIC_A = "🎷",
-  MUSIC_B = "🎹",
-  ROUTE_NO = "🛑",
-  ROUTE_A = "🌄",
-  ROUTE_BEACH = "🌇"
-}
+const actionMapping =
+  [
+    "🛑(🔇)",
+    "🌴(🏄🏄)",   // Beach --> Bechboys
+    "🌇(🔥🌞)",          // City --> Summer In The City
+    "🌄(👩‍🎤🐟)",          // Mountain --> Helene Fisher
+    "🌅(🎹⚡)",          // Lake --> House
+    "🌲(💀🎸)"           // Forest --> Death Metal
+  ]
 
 class TimelineStop {
   constructor(
     public min: number,
     public emoji: string,
     public emotion?: number,
-    public plannedAction?: PlannedAction
+    public plannedAction?: number
   ) { }
 }
 interface ITimelineState {
@@ -52,7 +53,7 @@ export default class Timeline extends Component<{}, ITimelineState> {
     return (xInMinutes / 60) * TIMELINE_VIEWBOX_WIDTH
   }
 
-  public setMeta(xInMinutes: number, emotion?: number, plannedAction?: PlannedAction) {
+  public setMeta(xInMinutes: number, emotion?: number, plannedAction?: number) {
     const newStops = this.state.stops
     let index = newStops.findIndex(s => s.min === xInMinutes)
 
@@ -68,13 +69,6 @@ export default class Timeline extends Component<{}, ITimelineState> {
 
   public componentDidMount() {
     this.animateMe(0)
-
-    // TESTING
-    
-
-    // setTimeout(() => {
-    //   this.moveTo(45)
-    // }, 3000)
   }
 
   public moveTo(xInMinutes: number) {
@@ -83,7 +77,7 @@ export default class Timeline extends Component<{}, ITimelineState> {
   }
 
   private onStartButtonPressed() {
-    this.setState({startStopButtonPressed: true})
+    this.setState({ startStopButtonPressed: true })
 
     setTimeout(() => {
       this.setState({ stops: [new TimelineStop(0, "🏡")] })
@@ -99,14 +93,37 @@ export default class Timeline extends Component<{}, ITimelineState> {
       this.moveTo(0)
     }, 2000)
 
-    setTimeout(() => {
-      this.setMeta(0, 0.5, PlannedAction.MUSIC_A)
-    }, 3000)
-
 
     setTimeout(() => {
-      this.setMeta(0, 0.5, PlannedAction.MUSIC_A)
+      this.setMeta(0, 0.5, 1)
     }, 5000)
+
+    // STEP #1
+    setTimeout(() => {
+      this.moveTo(15)
+    }, 7000)
+
+    setTimeout(() => {
+      this.setMeta(15)
+    }, 7000)
+
+    setTimeout(() => {
+      this.setMeta(15, 1.0, 2)
+    }, 9000)
+
+
+    // STEP #2
+    setTimeout(() => {
+      this.moveTo(30)
+    }, 11000)
+
+    setTimeout(() => {
+      this.setMeta(30)
+    }, 11000)
+
+    setTimeout(() => {
+      this.setMeta(30, 0.1, 3)
+    }, 13000)
   }
 
   public async animateMe(previous: number) {
@@ -134,7 +151,7 @@ export default class Timeline extends Component<{}, ITimelineState> {
     return (
       <div class="timeline">
         {!startStopButtonPressed && (
-          <img class="starstopbutton" src="./assets/startstopbutton.png" onClick={() => this.onStartButtonPressed()}/>
+          <img class="starstopbutton" src="./assets/startstopbutton.png" onClick={() => this.onStartButtonPressed()} />
         )}
         {startStopButtonPressed && (<svg
           class="timeline-svg"
@@ -170,7 +187,7 @@ export default class Timeline extends Component<{}, ITimelineState> {
 
                 {
                   stop.plannedAction && (
-                    <text x={x} y={200 + TIMELINE_BASELINE_Y_OFFSET} class={`timestop-bottom`}>{stop.plannedAction}</text>
+                    <text x={x} y={200 + TIMELINE_BASELINE_Y_OFFSET} class={`timestop-bottom`}>{actionMapping[stop.plannedAction]}</text>
                   )
                 }
               </g>)
