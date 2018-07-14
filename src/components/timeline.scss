@@ -12,10 +12,40 @@
     height: auto; // position: absolute;
 }
 
-.small {
+@keyframes fadeInTop {
+    from {
+        transform: translate(-0.7em, -10.3em); 
+    }
+    to {
+        transform: translate(-0.7em, 0.3em); 
+    }
+}
+
+@keyframes fadeInBottom {
+    from {
+        transform: translate(-0.7em, 10.3em); 
+    }
+    to {
+        transform: translate(-0.7em, 0.3em); 
+    }
+}
+
+.timestop-top {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 2em;
-    transform: translate(-0.7em, 0.3em);
+    transform: translate(-0.7em, 0.3em); 
+    animation: fadeInTop ease-in-out 1;
+    animation-fill-mode: forwards;
+    animation-duration: 1s;
+}
+
+.timestop-bottom {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 2em;
+    transform: translate(-0.7em, 0.3em); 
+    animation: fadeInBottom ease-in-out 1;
+    animation-fill-mode: forwards;
+    animation-duration: 1s;
 }
 
 .svg-stops {
@@ -43,5 +73,5 @@
 }
 
 .grow-svg {
-   stroke-width: 40
+    stroke-width: 40
 }

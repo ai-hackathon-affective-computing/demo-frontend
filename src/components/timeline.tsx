@@ -6,7 +6,8 @@ import easing from "./easing"
 import {
   TIMELINE_VIEWBOX_HEIGHT,
   TIMELINE_VIEWBOX_WIDTH,
-  TIMELINE_PADDING_X
+  TIMELINE_PADDING_X,
+  TIMELINE_BASELINE_Y_OFFSET
 } from "./timeline.constants"
 
 const SPEED_DECAY = 0.001
@@ -23,7 +24,7 @@ enum PlannedAction {
 class TimelineStop {
   constructor(
     public min: number,
-    public emoji?: string,
+    public emoji: string,
     public emotion?: number,
     public plannedAction?: PlannedAction
   ) { }
@@ -44,11 +45,11 @@ export default class Timeline extends Component<{}, ITimelineState> {
     targetX: -200,
     t: 0,
     stops: [
-      new TimelineStop(0, "🏡"),
+      // new TimelineStop(0, "🏡"),
       // new TimelineStop(15, "📍"),
       // new TimelineStop(30, "📍"),
       // new TimelineStop(45, "📍"),
-      new TimelineStop(60, "🏁")
+      // new TimelineStop(60, "🏁")
     ]
   }
   private isAnimating: boolean = false
@@ -67,7 +68,7 @@ export default class Timeline extends Component<{}, ITimelineState> {
     emotion && (newStops[index].emotion = emotion)
     plannedAction && (newStops[index].plannedAction = plannedAction)
 
-    this.setState({stops: newStops})
+    this.setState({ stops: newStops })
   }
 
   public componentDidMount() {
@@ -75,12 +76,22 @@ export default class Timeline extends Component<{}, ITimelineState> {
 
     // TESTING
     setTimeout(() => {
-      this.moveTo(0)
+      this.setState({ stops: [new TimelineStop(0, "🏡")] })
     }, 0)
 
-    // setTimeout(() => {
-    //   this.setMeta(15, undefined, PlannedAction.MUSIC_A)
-    // }, 1000)
+    setTimeout(() => {
+      const newStops = this.state.stops
+      newStops.push(new TimelineStop(60, "🏁"))
+      this.setState({ stops: newStops })
+    }, 1000)
+
+    setTimeout(() => {
+      this.moveTo(0)
+    }, 2000)
+
+    setTimeout(() => {
+      this.setMeta(0, 0.5, PlannedAction.MUSIC_A)
+    }, 3000)
 
     // setTimeout(() => {
     //   this.moveTo(45)
@@ -110,7 +121,7 @@ export default class Timeline extends Component<{}, ITimelineState> {
   public render({ }, { targetX, startX, t, stops }: ITimelineState) {
     const delta = targetX - startX
     const bmwXPosition = startX + easing.easeInOutCubic(t) * delta
-    const roadPath = `M${-TIMELINE_PADDING_X} 100 L${TIMELINE_VIEWBOX_WIDTH + TIMELINE_PADDING_X} 100 Z`
+    const roadPath = `M${-TIMELINE_PADDING_X} ${100 + TIMELINE_BASELINE_Y_OFFSET} L${TIMELINE_VIEWBOX_WIDTH + TIMELINE_PADDING_X} ${100 + TIMELINE_BASELINE_Y_OFFSET} Z`
 
     const EMOTION_THRESHOLD_SAD = 0.3333
     const EMOTION_THRESHOLD_NEUTRAL = 0.6666
@@ -130,16 +141,17 @@ export default class Timeline extends Component<{}, ITimelineState> {
             stops.map(stop => {
               const x = this.minutesToSVG(stop.min)
               const isBig = Math.abs(bmwXPosition - x) < 50
-              const emojiPosition = isBig ? 56 : 73
-              return (<g> {stop.emoji ? (
-                <text x={x} y={emojiPosition} class={`small ${isBig ? "grow" : ""}`}>{stop.emoji}</text>
-              ) : (
-                  <circle cx={x} cy="100" r="15" class={`svg-stops ${isBig ? "grow-svg" : ""}`} />
-                )}
+              const emojiPosition = (isBig ? 56 : 73) + TIMELINE_BASELINE_Y_OFFSET
+              return (<g>
+                <text x={x} y={emojiPosition} class={`timestop-top ${isBig ? "grow" : ""}`}>{stop.emoji}</text>
 
                 {
                   stop.emotion && (
-                    <text x={x} y="150" class={`small`}>
+                    <text
+                      x={x}
+                      y={150 + TIMELINE_BASELINE_Y_OFFSET}
+                      class={`timestop-bottom`}>
+
                       {(stop.emotion < EMOTION_THRESHOLD_SAD && "😕") ||
                         (stop.emotion < EMOTION_THRESHOLD_NEUTRAL && "😐") ||
                         "😊"}
@@ -149,7 +161,7 @@ export default class Timeline extends Component<{}, ITimelineState> {
 
                 {
                   stop.plannedAction && (
-                    <text x={x} y="200" class={`small`}>{stop.plannedAction}</text>
+                    <text x={x} y={200 + TIMELINE_BASELINE_Y_OFFSET} class={`timestop-bottom`}>{stop.plannedAction}</text>
                   )
                 }
               </g>)
