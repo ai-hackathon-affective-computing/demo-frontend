@@ -27,10 +27,12 @@
     "dom-loaded": "^1.0.1",
     "improved": "^1.5.1",
     "preact": "^8.2.9",
-    "pug": "^2.0.3"
+    "pug": "^2.0.3",
+    "query-string": "^6.1.0"
   },
   "devDependencies": {
     "@svgr/cli": "^2.1.1",
+    "@types/query-string": "^6.1.0",
     "cross-env": "^5.2.0",
     "css-loader": "^1.0.0",
     "express": "^4.16.3",
