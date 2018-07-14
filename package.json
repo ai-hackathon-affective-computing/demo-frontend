@@ -27,8 +27,10 @@
     "dom-loaded": "^1.0.1",
     "improved": "^1.5.1",
     "preact": "^8.2.9",
+    "preact-compat": "^3.18.0",
     "pug": "^2.0.3",
-    "query-string": "^6.1.0"
+    "query-string": "^6.1.0",
+    "react-youtube": "^7.6.0"
   },
   "devDependencies": {
     "@svgr/cli": "^2.1.1",
