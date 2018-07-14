@@ -51,7 +51,8 @@ export default class Timeline extends Component<{}, ITimelineState> {
   }
 
   private animationStep: number = 0
-  private isAnimating: boolean = false
+  private isBMWDriving: boolean = false
+  private isAdvancing: boolean = false
   private minutesToSVG(xInMinutes: number) {
     return (xInMinutes / 60) * TIMELINE_VIEWBOX_WIDTH
   }
@@ -75,38 +76,46 @@ export default class Timeline extends Component<{}, ITimelineState> {
       switch (evt.keyCode) {
         case KeyCode.Space:
           if (this.state.startStopButtonPressed)
-            this.mockAnimation(this.animationStep++)
+            this.advanceOneStep(this.animationStep)
           else
             this.onStartButtonPressed()
           break
       }
     })
-
     this.animateMe(0)
   }
 
-  private mockAnimation(step: number) {
-    console.log(`mockAnimation = ${step}`)
+  private advanceOneStep(step: number) {
+    if (step > 4 || this.isAdvancing)
+      return
+
+    this.isAdvancing = true
+
     setTimeout(() => {
       this.moveTo(15 * step)
     }, 0)
 
-    setTimeout(() => {
-      this.setMeta(15 * step)
-    }, 0
+    if (step < 4) {
+      setTimeout(() => {
+        this.setMeta(15 * step)
+      }, 0)
 
-    setTimeout(() => {
+      setTimeout(() => {
         this.setMeta(15 * step, Math.random(), step + 1)
+        this.animationStep++
+        this.isAdvancing = false
+
       }, 2000)
+    }
   }
 
   public moveTo(xInMinutes: number) {
     this.setState({ startX: this.state.targetX, targetX: this.minutesToSVG(xInMinutes), t: 0 })
-    this.isAnimating = true
+    this.isBMWDriving = true
   }
 
-  private onStartButtonPressed() {
-    this.setState({ startStopButtonPressed: true })
+  private triggerInitialAnimation() {
+    this.isAdvancing = true
 
     setTimeout(() => {
       this.setState({ stops: [new TimelineStop(0, "🏡")] })
@@ -120,18 +129,24 @@ export default class Timeline extends Component<{}, ITimelineState> {
 
     setTimeout(() => {
       this.moveTo(0)
+     this.isAdvancing = false
     }, 2000)
+  }
+
+  private onStartButtonPressed() {
+    this.setState({ startStopButtonPressed: true })
+    this.triggerInitialAnimation()
   }
 
   public async animateMe(previous: number) {
     const dt = await nextFrame()
     const delta = dt - previous
 
-    if (this.isAnimating) {
+    if (this.isBMWDriving) {
       let newT = this.state.t + delta * SPEED_DECAY
       if (newT >= 1.0) {
         newT = 1.0
-        this.isAnimating = false
+        this.isBMWDriving = false
       }
       this.setState({ t: newT })
     }
