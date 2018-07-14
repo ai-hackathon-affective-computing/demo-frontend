@@ -10,6 +10,8 @@ import {
   TIMELINE_BASELINE_Y_OFFSET
 } from "./timeline.constants"
 import KeyCode from "../utils/keycode"
+import backend from "../utils/backend"
+import { MusicState, RouteState, IActionState } from "../utils/types"
 
 const SPEED_DECAY = 0.001
 
@@ -22,6 +24,22 @@ const actionMapping =
     "🌅(🎹⚡)",          // Lake --> House
     "🌲(💀🎸)"           // Forest --> Death Metal
   ]
+
+const backendMapping =
+  [
+    { music: MusicState.None, route: RouteState.None },
+    { music: MusicState.A, route: RouteState.A },
+    { music: MusicState.A, route: RouteState.B },
+    { music: MusicState.B, route: RouteState.A },
+    { music: MusicState.B, route: RouteState.B },
+    { music: MusicState.B, route: RouteState.B },
+
+    { music: MusicState.None, route: RouteState.None },
+  ]
+
+let remainingActions = [
+  1, 2, 3, 4, 5
+]
 
 class TimelineStop {
   constructor(
@@ -37,7 +55,8 @@ interface ITimelineState {
   t: number
   stops: TimelineStop[]
   startStopButtonPressed: boolean
-  audioIndexToPlay?: number
+  audioIndexToPlay?: number,
+  actionState: IActionState
 }
 
 export default class Timeline extends Component<{}, ITimelineState> {
@@ -49,7 +68,12 @@ export default class Timeline extends Component<{}, ITimelineState> {
     t: 0,
     stops: [],
     startStopButtonPressed: false,
-    audioIndexToPlay: -1
+    audioIndexToPlay: -1,
+    actionState: {
+      music: MusicState.None,
+      step: 0, // index of current action in timeline
+      route: RouteState.None
+    }
   }
 
   private animationStep: number = 0
@@ -87,7 +111,7 @@ export default class Timeline extends Component<{}, ITimelineState> {
     this.animateMe(0)
   }
 
-  private advanceOneStep(step: number) {
+  private async advanceOneStep(step: number) {
     if (step > 5 || this.isAdvancing)
       return
 
@@ -97,19 +121,31 @@ export default class Timeline extends Component<{}, ITimelineState> {
       this.moveTo(12 * step)
     }, 0)
 
-    if (step < 5) {
+    if (step < 6) {
       setTimeout(() => {
         this.setMeta(12 * step)
       }, 0)
 
-      setTimeout(() => {
-        this.setMeta(12 * step, Math.random(), step + 1)
-        this.animationStep++
-        this.isAdvancing = false
+      const nextAction = await backend.getNextAction(this.state.actionState)
+      if (step < 5) {
+        if (remainingActions.indexOf(nextAction.action) === -1) {
+          nextAction.action = remainingActions[Math.floor(Math.random() * remainingActions.length)]
+        }
+        remainingActions = remainingActions.filter(item => item !== nextAction.action)
 
-      }, 2000)
-    } else {
-      this.setState({audioIndexToPlay: 9})
+        this.setMeta(12 * step, nextAction.env.happiness, nextAction.action)
+      } else {
+        this.setState({ audioIndexToPlay: 9 })
+      }
+      this.animationStep++
+      this.isAdvancing = false
+
+      const newActionState = this.state.actionState
+      newActionState.step++
+      newActionState.music = backendMapping[this.animationStep].music
+      newActionState.route = backendMapping[this.animationStep].route
+      this.setState({ actionState: newActionState })
+
     }
   }
 
@@ -133,7 +169,7 @@ export default class Timeline extends Component<{}, ITimelineState> {
 
     setTimeout(() => {
       this.moveTo(0)
-     this.isAdvancing = false
+      this.isAdvancing = false
     }, 2000)
   }
 
@@ -172,10 +208,10 @@ export default class Timeline extends Component<{}, ITimelineState> {
         )}
 
         {
-            startStopButtonPressed && audioIndexToPlay !== -1 && (
-              // @ts-ignore
-              <audio autoplay="true" src={`https://s3-eu-west-1.amazonaws.com/affective-computing/sounds/action_${audioIndexToPlay}.mp3`} />
-            )
+          startStopButtonPressed && audioIndexToPlay && audioIndexToPlay !== -1 && (
+            // @ts-ignore
+            <audio autoplay="true" src={`https://s3-eu-west-1.amazonaws.com/affective-computing/sounds/action_${audioIndexToPlay}.mp3`} />
+          )
         }
 
         {startStopButtonPressed && (<svg
@@ -189,7 +225,6 @@ export default class Timeline extends Component<{}, ITimelineState> {
           <BmwSVG x={bmwXPosition} />
 
           {
-            // https://s3-eu-west-1.amazonaws.com/affective-computing/sounds/action_1.mp3
             stops.map(stop => {
               const x = this.minutesToSVG(stop.min)
               const isBig = Math.abs(bmwXPosition - x) < 50
@@ -198,7 +233,7 @@ export default class Timeline extends Component<{}, ITimelineState> {
                 <text x={x} y={emojiPosition} class={`timestop-top ${isBig ? "grow" : ""}`}>{stop.emoji}</text>
 
                 {
-                  stop.emotion && (
+                  (stop.emotion !== undefined) && (
                     <text
                       x={x}
                       y={150 + TIMELINE_BASELINE_Y_OFFSET}
@@ -212,7 +247,7 @@ export default class Timeline extends Component<{}, ITimelineState> {
                 }
 
                 {
-                  stop.plannedAction && (
+                  (stop.plannedAction !== undefined) && (
                     <text x={x} y={200 + TIMELINE_BASELINE_Y_OFFSET} class={`timestop-bottom`}>{actionMapping[stop.plannedAction]}</text>
                   )
                 }
