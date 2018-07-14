@@ -16,15 +16,15 @@ export default class Backend {
     key: string,
     value: Blob | undefined
   ): Promise<boolean> {
-    console.log(`Setting in S3: ${key}:${value ? value.toString() : ""}`)
+    // console.log(`Setting in S3: ${key}:${value ? value.toString() : "###"}`)
     try {
       const bucketURL = await get(`${lambdaBaseURL}/camera/`)
-      console.log(`bucketURL: ${JSON.stringify(bucketURL)}`)
+      // console.log(`bucketURL: ${JSON.stringify(bucketURL)}`)
       const result = await put(bucketURL.uploadUrl, value ? value : {}, false, {
         "Content-Type": "image/png",
         "x-amz-acl": "public-read"
       })
-      console.log(result)
+      // console.log(result)
       return Boolean(result)
     } catch (e) {
       return false
