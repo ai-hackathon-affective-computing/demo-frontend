@@ -7,6 +7,7 @@
     "buildOnce": "webpack",
     "buildProd": "cross-env NODE_ENV=production webpack && node compile-markup.js",
     "dev": "node dev-server.js",
+    "startProd": "cross-env NODE_ENV=production node dev-server.js",
     "start": "npm run dev",
     "lint": "tslint --format stylish --project .",
     "prettier": "prettier --config node_modules/tslint-lt/.prettierrc.yml --write \"{,!node_modules/}**/*.{ts,tsx}\"",
