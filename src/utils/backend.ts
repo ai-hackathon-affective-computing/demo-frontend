@@ -3,7 +3,7 @@ import { get, put } from "improved/dist/ajax"
 import { IActionState } from "./types"
 
 const lambdaBaseURL =
-  "https://l1zp6t6k1j.execute-api.eu-west-1.amazonaws.com/dev"
+  "https://aozyl3phwc.execute-api.eu-west-1.amazonaws.com/dev"
 
 export default class Backend {
   public static lastPersonId: number
