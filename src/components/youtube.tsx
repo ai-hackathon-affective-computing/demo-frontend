@@ -8,7 +8,7 @@ interface IYoutubeProps {
 }
 
 export default class Youtube extends Component<IYoutubeProps> {
-  private uris: string[] = [
+  private readonly uris: string[] = [
     "", // 0 nothing
     "apBWI6xrbLY", // 1 beach boys
     "U5bUmx-hk-c", // 2 summer in the city
@@ -34,14 +34,14 @@ export default class Youtube extends Component<IYoutubeProps> {
 
     return (
       <div class="youtube">
-      { index &&
-      <YouTube
-          videoId={this.uris[index]}
-          opts={opts}
-          onReady={() => console.log(`YT Ready ${index}`)}
-        />
-      }
-    </div>
+        {index && (
+          <YouTube
+            videoId={this.uris[index]}
+            opts={opts}
+            onReady={() => console.log(`YT Ready ${index}`)}
+          />
+        )}
+      </div>
     )
   }
 }

@@ -11,7 +11,7 @@ interface IAppState {
 export default class App extends Component<{}, {}> {
   public state: IAppState = {
     uploadFrameInterval: 1e3,
-    fetchActionsInterval: 10e3,
+    fetchActionsInterval: 10e3
   }
 
   public render({}, { uploadFrameInterval }: IAppState) {

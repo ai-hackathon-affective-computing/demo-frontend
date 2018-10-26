@@ -13,7 +13,8 @@ const invertedScale = 1.0 / scale
 // tslint:disable:no-magic-numbers
 const globalTransformString = `translate(
     -40
-    ${(TIMELINE_VIEWBOX_HEIGHT - 150 + TIMELINE_BASELINE_Y_OFFSET*2) * 0.5 - BMW_VIEWBOX_HEIGHT * 0.5 * scale})
+    ${(TIMELINE_VIEWBOX_HEIGHT - 150 + TIMELINE_BASELINE_Y_OFFSET * 2) * 0.5 -
+      BMW_VIEWBOX_HEIGHT * 0.5 * scale})
     scale(-${scale},${scale})`
 // tslint:enable:no-magic-numbers
 

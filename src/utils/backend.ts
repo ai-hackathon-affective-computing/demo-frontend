@@ -30,13 +30,10 @@ export default class Backend {
       // shame
       Backend.lastPersonId = personId
 
-      //console.log(`bucketURL: ${JSON.stringify(bucketURL)}`)
-      const result = await put(
-        uploadUrl, value ? value : {}, false, {
+      const result = await put(uploadUrl, value ? value : {}, false, {
         "Content-Type": "image/png",
         "x-amz-acl": "public-read"
       })
-      //console.log(result)
       return Boolean(result)
     } catch (e) {
       return false

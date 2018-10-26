@@ -16,33 +16,30 @@ import Webcam, { webcamSingleton } from "./webcam"
 import Youtube from "./youtube"
 import "preact/debug"
 
+// tslint:disable:no-magic-numbers
 const SPEED_DECAY = 0.001
 
-const actionMapping =
-  [
-    "🛑(🔇)",
-    "🌴(🏄🏄)",   // Beach --> Bechboys
-    "🌇(🔥🌞)",          // City --> Summer In The City
-    "🌄(👩‍🎤🐟)",          // Mountain --> Helene Fisher
-    "🌅(🎹⚡)",          // Lake --> House
-    "🌲(💀🎸)"           // Forest --> Death Metal
-  ]
-
-const backendMapping =
-  [
-    { music: MusicState.None, route: RouteState.None },
-    { music: MusicState.A, route: RouteState.A },
-    { music: MusicState.A, route: RouteState.B },
-    { music: MusicState.B, route: RouteState.A },
-    { music: MusicState.B, route: RouteState.B },
-    { music: MusicState.B, route: RouteState.B },
-
-    { music: MusicState.None, route: RouteState.None },
-  ]
-
-let remainingActions = [
-  1, 2, 3, 4, 5
+const actionMapping = [
+  "🛑(🔇)",
+  "🌴(🏄🏄)", // Beach --> Bechboys
+  "🌇(🔥🌞)", // City --> Summer In The City
+  "🌄(👩‍🎤🐟)", // Mountain --> Helene Fisher
+  "🌅(🎹⚡)", // Lake --> House
+  "🌲(💀🎸)" // Forest --> Death Metal
 ]
+
+const backendMapping = [
+  { music: MusicState.None, route: RouteState.None },
+  { music: MusicState.A, route: RouteState.A },
+  { music: MusicState.A, route: RouteState.B },
+  { music: MusicState.B, route: RouteState.A },
+  { music: MusicState.B, route: RouteState.B },
+  { music: MusicState.B, route: RouteState.B },
+
+  { music: MusicState.None, route: RouteState.None }
+]
+
+let remainingActions = [1, 2, 3, 4, 5]
 
 class TimelineStop {
   constructor(
@@ -50,7 +47,7 @@ class TimelineStop {
     public emoji: string,
     public emotion?: number,
     public plannedAction?: number
-  ) { }
+  ) {}
 }
 interface ITimelineState {
   startX: number
@@ -58,7 +55,7 @@ interface ITimelineState {
   t: number
   stops: TimelineStop[]
   startStopButtonPressed: boolean
-  audioIndexToPlay?: number,
+  audioIndexToPlay?: number
   actionState: IActionState
 }
 
@@ -94,8 +91,8 @@ export default class Timeline extends Component<{}, ITimelineState> {
       index = newStops.push(new TimelineStop(xInMinutes, "📍")) - 1
     }
 
-    emotion && (newStops[index].emotion = emotion)
-    plannedAction && (newStops[index].plannedAction = plannedAction)
+    if (emotion) newStops[index].emotion = emotion
+    if (plannedAction) newStops[index].plannedAction = plannedAction
 
     this.setState({ stops: newStops, audioIndexToPlay: plannedAction })
   }
@@ -103,12 +100,10 @@ export default class Timeline extends Component<{}, ITimelineState> {
   private onProgress() {
     if (this.state.startStopButtonPressed)
       this.advanceOneStep(this.animationStep)
-    else
-      this.onStartButtonPressed()
+    else this.onStartButtonPressed()
   }
 
   public componentDidMount() {
-
     window.addEventListener("keydown", evt => {
       switch (evt.keyCode) {
         case KeyCode.Space:
@@ -120,8 +115,7 @@ export default class Timeline extends Component<{}, ITimelineState> {
   }
 
   private async advanceOneStep(step: number) {
-    if (step > 5 || this.isAdvancing)
-      return
+    if (step > 5 || this.isAdvancing) return
 
     this.isAdvancing = true
 
@@ -139,9 +133,14 @@ export default class Timeline extends Component<{}, ITimelineState> {
       const nextAction = await backend.getNextAction(this.state.actionState)
       if (step < 5) {
         if (remainingActions.indexOf(nextAction.action) === -1) {
-          nextAction.action = remainingActions[Math.floor(Math.random() * remainingActions.length)]
+          nextAction.action =
+            remainingActions[
+              Math.floor(Math.random() * remainingActions.length)
+            ]
         }
-        remainingActions = remainingActions.filter(item => item !== nextAction.action)
+        remainingActions = remainingActions.filter(
+          item => item !== nextAction.action
+        )
 
         this.setMeta(12 * step, nextAction.env.happiness, nextAction.action)
       } else {
@@ -155,12 +154,15 @@ export default class Timeline extends Component<{}, ITimelineState> {
       newActionState.music = backendMapping[this.animationStep].music
       newActionState.route = backendMapping[this.animationStep].route
       this.setState({ actionState: newActionState })
-
     }
   }
 
   public moveTo(xInMinutes: number) {
-    this.setState({ startX: this.state.targetX, targetX: this.minutesToSVG(xInMinutes), t: 0 })
+    this.setState({
+      startX: this.state.targetX,
+      targetX: this.minutesToSVG(xInMinutes),
+      t: 0
+    })
     this.isBMWDriving = true
   }
 
@@ -203,73 +205,99 @@ export default class Timeline extends Component<{}, ITimelineState> {
     this.animateMe(dt)
   }
 
-  public render({ }, { targetX, startX, t, stops, startStopButtonPressed, audioIndexToPlay }: ITimelineState) {
+  public render(
+    {},
+    {
+      targetX,
+      startX,
+      t,
+      stops,
+      startStopButtonPressed,
+      audioIndexToPlay
+    }: ITimelineState
+  ) {
     const delta = targetX - startX
     const bmwXPosition = startX + easing.easeInOutCubic(t) * delta
-    const roadPath = `M${-TIMELINE_PADDING_X} ${100 + TIMELINE_BASELINE_Y_OFFSET} L${TIMELINE_VIEWBOX_WIDTH + TIMELINE_PADDING_X} ${100 + TIMELINE_BASELINE_Y_OFFSET} Z`
+    const roadPath = `M${-TIMELINE_PADDING_X} ${100 +
+      TIMELINE_BASELINE_Y_OFFSET} L${TIMELINE_VIEWBOX_WIDTH +
+      TIMELINE_PADDING_X} ${100 + TIMELINE_BASELINE_Y_OFFSET} Z`
 
     const EMOTION_THRESHOLD_SAD = 0.3333
     const EMOTION_THRESHOLD_NEUTRAL = 0.6666
     return (
-      <div class="timeline" onTouchEnd={ () => this.onProgress()} onClick = {() => this.onProgress()}>
-
+      <div
+        class="timeline"
+        onTouchEnd={() => this.onProgress()}
+        onClick={() => this.onProgress()}
+      >
         {!startStopButtonPressed && (
           <img class="starstopbutton" src="./assets/startstopbutton.png" />
         )}
 
-        {
-          startStopButtonPressed && audioIndexToPlay && audioIndexToPlay !== -1 && (
-            // @ts-ignore
-            <audio autoplay="true" src={`https://s3-eu-west-1.amazonaws.com/affective-computing/sounds/action_${audioIndexToPlay}.mp3`} />
-          )
-        }
+        {startStopButtonPressed &&
+          audioIndexToPlay &&
+          audioIndexToPlay !== -1 && (
+            <audio
+              // @ts-ignore
+              autoplay="true"
+              src={`https://s3-eu-west-1.amazonaws.com/affective-computing/sounds/action_${audioIndexToPlay}.mp3`}
+            />
+          )}
 
-        {startStopButtonPressed && (<svg
-          class="timeline-svg"
-          viewBox={`${-TIMELINE_PADDING_X} 0 ${TIMELINE_VIEWBOX_WIDTH +
-            2 * TIMELINE_PADDING_X} ${TIMELINE_VIEWBOX_HEIGHT}`}
-        >
-          <path d={roadPath} class="svg-street" />
-          <path d={roadPath} class="svg-street-dash" />
+        {startStopButtonPressed && (
+          <svg
+            class="timeline-svg"
+            viewBox={`${-TIMELINE_PADDING_X} 0 ${TIMELINE_VIEWBOX_WIDTH +
+              2 * TIMELINE_PADDING_X} ${TIMELINE_VIEWBOX_HEIGHT}`}
+          >
+            <path d={roadPath} class="svg-street" />
+            <path d={roadPath} class="svg-street-dash" />
 
-          <BmwSVG x={bmwXPosition} />
+            <BmwSVG x={bmwXPosition} />
 
-          {
-            stops.map(stop => {
+            {stops.map(stop => {
               const x = this.minutesToSVG(stop.min)
               const isBig = Math.abs(bmwXPosition - x) < 50
-              const emojiPosition = (isBig ? 56 : 73) + TIMELINE_BASELINE_Y_OFFSET
-              return (<g>
-                <text x={x} y={emojiPosition} class={`timestop-top ${isBig ? "grow" : ""}`}>{stop.emoji}</text>
+              const emojiPosition =
+                (isBig ? 56 : 73) + TIMELINE_BASELINE_Y_OFFSET
+              return (
+                <g>
+                  <text
+                    x={x}
+                    y={emojiPosition}
+                    class={`timestop-top ${isBig ? "grow" : ""}`}
+                  >
+                    {stop.emoji}
+                  </text>
 
-                {
-                  (stop.emotion !== undefined) && (
+                  {stop.emotion !== undefined && (
                     <text
                       x={x}
                       y={150 + TIMELINE_BASELINE_Y_OFFSET}
-                      class={`timestop-bottom`}>
-
+                      class={`timestop-bottom`}
+                    >
                       {(stop.emotion < EMOTION_THRESHOLD_SAD && "😕") ||
                         (stop.emotion < EMOTION_THRESHOLD_NEUTRAL && "😐") ||
                         "😊"}
                     </text>
-                  )
-                }
+                  )}
 
-                {
-                  (stop.plannedAction !== undefined) && (
-                    <text x={x} y={200 + TIMELINE_BASELINE_Y_OFFSET} class={`timestop-bottom`}>{actionMapping[stop.plannedAction]}</text>
-                  )
-                }
-              </g>)
-            })
-          }
+                  {stop.plannedAction !== undefined && (
+                    <text
+                      x={x}
+                      y={200 + TIMELINE_BASELINE_Y_OFFSET}
+                      class={`timestop-bottom`}
+                    >
+                      {actionMapping[stop.plannedAction]}
+                    </text>
+                  )}
+                </g>
+              )
+            })}
+          </svg>
+        )}
 
-        </svg>)}
-
-        {
-          <Youtube index={audioIndexToPlay}/>
-        }
+        {<Youtube index={audioIndexToPlay} />}
       </div>
     )
   }
