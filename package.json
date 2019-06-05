@@ -41,11 +41,11 @@
     "express": "^4.16.3",
     "mini-css-extract-plugin": "^0.4.3",
     "morgan": "^1.9.1",
-    "node-sass": "^4.9.3",
+    "node-sass": "^4.12.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.0",
     "ts-loader": "^5.2.1",
-    "tslint-lt": "^1.7.3",
+    "tslint-lt": "^1.9.0",
     "typescript": "^3.1.1",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.2"
