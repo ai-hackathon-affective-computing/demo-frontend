@@ -16,7 +16,7 @@ export default class Backend {
 
     const qs = stringify(entireState)
     const url = `${lambdaBaseURL}/next_action?${qs}`
-    return get(url)
+    return (await get(url)).json()
   }
 
   public static async putS3(
@@ -25,7 +25,9 @@ export default class Backend {
   ): Promise<boolean> {
     // console.log(`Setting in S3: ${key}:${value ? value.toString() : "###"}`)
     try {
-      const { uploadUrl, personId } = await get(`${lambdaBaseURL}/camera/`)
+      const { uploadUrl, personId } = await (await get(
+        `${lambdaBaseURL}/camera/`
+      )).json()
 
       // shame
       Backend.lastPersonId = personId

@@ -234,15 +234,13 @@ export default class Timeline extends Component<{}, ITimelineState> {
           <img class="starstopbutton" src="./assets/startstopbutton.png" />
         )}
 
-        {startStopButtonPressed &&
-          audioIndexToPlay &&
-          audioIndexToPlay !== -1 && (
-            <audio
-              // @ts-ignore
-              autoplay="true"
-              src={`https://s3-eu-west-1.amazonaws.com/affective-computing/sounds/action_${audioIndexToPlay}.mp3`}
-            />
-          )}
+        {startStopButtonPressed && audioIndexToPlay && audioIndexToPlay !== -1 && (
+          // @ts-ignore
+          <audio
+            autoplay="true"
+            src={`https://s3-eu-west-1.amazonaws.com/affective-computing/sounds/action_${audioIndexToPlay}.mp3`}
+          />
+        )}
 
         {startStopButtonPressed && (
           <svg
